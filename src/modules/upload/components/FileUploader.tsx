@@ -8,7 +8,7 @@ type Props = {
   onLoad: (pages: DocumentPage[]) => void;
 };
 
-export const FileUploader = ({ onLoad: _onLoad }: Props) => {
+export const FileUploader = ({ onLoad: _onLoad }: Props) => { // eslint-disable-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 

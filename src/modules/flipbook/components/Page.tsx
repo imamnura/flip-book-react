@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from "react";
+import { forwardRef, memo } from "react";
 import type { DocumentPage } from "../../document/types/document";
 
 interface PageProps {

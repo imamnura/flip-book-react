@@ -48,7 +48,7 @@ export const FlipbookViewer: React.FC<FlipbookViewerProps> = ({
     viewMode,
     toggleViewMode,
   } = useFlipbookStore();
-  const flipBookRef = useRef<any>(null);
+  const flipBookRef = useRef<{ pageFlip: () => { flip: (page: number) => void } } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Lazy loading pages for performance
@@ -92,6 +92,7 @@ export const FlipbookViewer: React.FC<FlipbookViewerProps> = ({
     if (urlState.page !== undefined && urlState.page !== currentPage) {
       setCurrentPage(urlState.page);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only on mount
 
   // Track page views
@@ -123,13 +124,13 @@ export const FlipbookViewer: React.FC<FlipbookViewerProps> = ({
     enabled: enableAutoFlip,
   });
 
-  // Responsive sizing with zoom
+  // Responsive sizing with zoom - BOOK FORMAT (2 pages side by side)
   const { width, height } = useResponsiveFlipbook({
     containerRef,
-    aspectRatio: 1.414, // A4 ratio
-    maxWidth: 800,
-    maxHeight: 600,
-    padding: 20,
+    aspectRatio: 0.707,  // Book ratio: 2 pages (width < height for portrait pages, but showing 2 = landscape book)
+    maxWidth: 1400,      // Increased for better visibility
+    maxHeight: 900,      // Adjusted for book proportions
+    padding: 10,         // Reduced for more space
   });
 
   const zoomedWidth = width * zoom;
@@ -147,7 +148,7 @@ export const FlipbookViewer: React.FC<FlipbookViewerProps> = ({
   }, [currentPage]);
 
   const handleFlip = useCallback(
-    (e: any) => {
+    (e: { data: number }) => {
       setCurrentPage(e.data);
 
       // Update URL state
@@ -165,7 +166,7 @@ export const FlipbookViewer: React.FC<FlipbookViewerProps> = ({
   }, []);
 
   const handleChangeState = useCallback(
-    (e: any) => {
+    (e: { data: string }) => {
       setIsFlipping(e.data === "flipping");
     },
     [setIsFlipping]
@@ -187,11 +188,10 @@ export const FlipbookViewer: React.FC<FlipbookViewerProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`flex flex-col h-full relative ${className} ${
-        isFullscreen
-          ? "bg-gradient-to-br from-gray-900 to-gray-800"
-          : "bg-transparent"
-      }`}
+      className={`flex flex-col h-full relative ${className} ${isFullscreen
+        ? "bg-gradient-to-br from-gray-900 to-gray-800"
+        : "bg-transparent"
+        }`}
     >
       {/* Toolbar */}
       <div className="backdrop-blur-xl bg-white/80 border-b border-white/20 px-6 py-4 flex items-center justify-between shadow-lg relative z-10">
@@ -264,14 +264,14 @@ export const FlipbookViewer: React.FC<FlipbookViewerProps> = ({
             ref={flipBookRef}
             width={zoomedWidth}
             height={zoomedHeight}
-            size="stretch"
-            minWidth={300}
-            maxWidth={1200}
-            minHeight={400}
-            maxHeight={1600}
+            size="fixed"          // Changed from "stretch" to maintain book proportions
+            minWidth={400}
+            maxWidth={2000}
+            minHeight={500}
+            maxHeight={2400}
             drawShadow={true}
             flippingTime={600}
-            usePortrait={true}
+            usePortrait={false}   // Changed to false for book (landscape) view
             startZIndex={0}
             autoSize={false}
             maxShadowOpacity={0.5}

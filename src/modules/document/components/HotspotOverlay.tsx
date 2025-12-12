@@ -12,8 +12,8 @@ interface HotspotOverlayProps {
 
 export const HotspotOverlay: React.FC<HotspotOverlayProps> = ({
   hotspot,
-  pageWidth: _pageWidth, // Reserved for future use
-  pageHeight: _pageHeight, // Reserved for future use
+  pageWidth: _pageWidth, // eslint-disable-line @typescript-eslint/no-unused-vars
+  pageHeight: _pageHeight, // eslint-disable-line @typescript-eslint/no-unused-vars
   sessionId,
   isEditMode = false,
 }) => {

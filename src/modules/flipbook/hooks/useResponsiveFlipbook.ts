@@ -16,9 +16,9 @@ interface FlipbookDimensions {
 export const useResponsiveFlipbook = ({
   containerRef,
   aspectRatio = 1.414, // A4 ratio by default
-  maxWidth = 1200,
-  maxHeight = 800,
-  padding = 40,
+  maxWidth = 1400,      // Increased from 1200
+  maxHeight = 1000,     // Increased from 800
+  padding = 10,         // Reduced from 40
 }: UseResponsiveFlipbookOptions) => {
   const [dimensions, setDimensions] = useState<FlipbookDimensions>({
     width: 600,
@@ -48,6 +48,7 @@ export const useResponsiveFlipbook = ({
   }, [containerRef, aspectRatio, maxWidth, maxHeight, padding]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     calculateDimensions();
 
     const resizeObserver = new ResizeObserver(() => {

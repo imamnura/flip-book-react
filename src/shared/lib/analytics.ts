@@ -154,10 +154,14 @@ class FlipbookAnalytics {
       }
 
       const data = JSON.parse(stored);
-      // Convert viewedPages from array to Set
-      data.sessions = data.sessions.map((session: any) => ({
+      // Convert viewedPages from array to Set with safety check
+      data.sessions = data.sessions.map((session: SessionData & { viewedPages: number[] | Set<number> }) => ({
         ...session,
-        viewedPages: new Set(session.viewedPages),
+        viewedPages: Array.isArray(session.viewedPages)
+          ? new Set(session.viewedPages)
+          : session.viewedPages instanceof Set
+            ? session.viewedPages
+            : new Set(),
       }));
 
       return data;
